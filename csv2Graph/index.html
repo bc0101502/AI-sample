@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>データ可視化ツール</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        .upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #0056b3;
+            background-color: #e9ecef;
+        }
+        .upload-area.dragover {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+        .data-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .file-info {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- サイドバー -->
+            <div class="col-md-3 bg-light p-3">
+                <h4><i class="fas fa-chart-bar"></i> データ可視化ツール</h4>
+                <hr>
+                
+                <!-- ファイルアップロード -->
+                <div class="mb-4">
+                    <h6>データファイルをアップロード</h6>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                        <p>CSVまたはJSONファイルをドラッグ＆ドロップ</p>
+                        <p class="text-muted">または</p>
+                        <input type="file" id="fileInput" accept=".csv,.json" class="form-control" style="display: none;">
+                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-folder-open"></i> ファイルを選択
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ファイル情報 -->
+                <div id="fileInfo" class="file-info" style="display: none;">
+                    <h6>ファイル情報</h6>
+                    <div id="fileDetails"></div>
+                </div>
+
+                <!-- グラフ設定 -->
+                <div class="mb-4" id="chartSettings" style="display: none;">
+                    <h6>グラフ設定</h6>
+                    <div class="mb-3">
+                        <label class="form-label">グラフタイプ</label>
+                        <select class="form-select" id="chartType">
+                            <option value="line">折れ線グラフ</option>
+                            <option value="bar">棒グラフ</option>
+                            <option value="scatter">散布図</option>
+                            <option value="pie">円グラフ</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">X軸（横軸）</label>
+                        <select class="form-select" id="xAxis"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Y軸（縦軸）</label>
+                        <select class="form-select" id="yAxis"></select>
+                    </div>
+                    <button class="btn btn-success w-100" onclick="generateChart()">
+                        <i class="fas fa-chart-line"></i> グラフ生成
+                    </button>
+                </div>
+
+                <!-- データプレビュー -->
+                <div class="mb-4" id="dataPreview" style="display: none;">
+                    <h6>データプレビュー</h6>
+                    <div class="data-table">
+                        <table class="table table-sm table-striped" id="previewTable">
+                            <thead></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- メインコンテンツ -->
+            <div class="col-md-9 p-4">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 id="chartTitle">データ可視化ツール</h2>
+                        <p class="text-muted">CSVまたはJSONファイルをアップロードして、グラフや表でデータを可視化できます。</p>
+                    </div>
+                </div>
+
+                <!-- グラフ表示エリア -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="chartCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- データテーブル -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>データテーブル</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped" id="dataTable">
+                                        <thead></thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
