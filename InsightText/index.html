@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InsightText - テキスト分析ツール</title>
+  <style>
+    body { font-family: 'Segoe UI', 'Meiryo', sans-serif; background: #f7f7fa; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 32px; }
+    h1 { text-align: center; color: #333; }
+    textarea { width: 100%; min-height: 120px; font-size: 1.1em; padding: 12px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 16px; }
+    button { background: #4f8cff; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-size: 1em; cursor: pointer; transition: background 0.2s; }
+    button:hover { background: #2563eb; }
+    .result { margin-top: 24px; background: #f0f4fa; border-radius: 8px; padding: 18px; }
+    .result h2 { font-size: 1.1em; margin-top: 0; }
+    .keywords span { display: inline-block; background: #e0e7ff; color: #333; border-radius: 4px; padding: 2px 8px; margin: 2px; font-size: 0.98em; }
+    .sentiment { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>InsightText<br><span style="font-size:0.6em; color:#666;">テキスト分析ツール</span></h1>
+    <textarea id="inputText" placeholder="ここにテキストを入力してください..."></textarea>
+    <button onclick="analyzeText()">分析する</button>
+    <div class="result" id="result" style="display:none;"></div>
+  </div>
+  <script>
+    function analyzeText() {
+      const text = document.getElementById('inputText').value.trim();
+      const resultDiv = document.getElementById('result');
+      if (!text) {
+        resultDiv.style.display = 'none';
+        return;
+      }
+      // 文字数カウント
+      const charCount = text.length;
+      // キーワード抽出（単純な頻出単語上位5件、日本語対応）
+      const words = text.replace(/\n/g, ' ').replace(/[^\p{L}\p{N}]+/gu, ' ').split(' ').filter(w => w.length > 1);
+      const freq = {};
+      words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
+      const keywords = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0,5).map(e => e[0]);
+      // 簡易感情分析（ポジティブ・ネガティブ単語数で判定）
+      const posWords = ['嬉しい','楽しい','最高','素晴らしい','良い','好き','感謝','幸せ','素敵','面白い'];
+      const negWords = ['悲しい','嫌い','最悪','悪い','辛い','苦しい','怒り','不満','怖い','つまらない'];
+      let pos = 0, neg = 0;
+      posWords.forEach(pw => { if(text.includes(pw)) pos++; });
+      negWords.forEach(nw => { if(text.includes(nw)) neg++; });
+      let sentiment = 'ニュートラル';
+      if (pos > neg) sentiment = 'ポジティブ';
+      else if (neg > pos) sentiment = 'ネガティブ';
+      // 結果表示
+      resultDiv.innerHTML = `
+        <h2>分析結果</h2>
+        <div><b>文字数:</b> ${charCount} 文字</div>
+        <div><b>キーワード:</b> <span class="keywords">${keywords.map(k=>`<span>${k}</span>`).join(' ') || '（該当なし）'}</span></div>
+        <div><b>感情分析:</b> <span class="sentiment">${sentiment}</span></div>
+      `;
+      resultDiv.style.display = 'block';
+    }
+  </script>
+</body>
+</html> 

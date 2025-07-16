@@ -1,0 +1,7 @@
+# OS・エディタの一時ファイル
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+*.bak 
