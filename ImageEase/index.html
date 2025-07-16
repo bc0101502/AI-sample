@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ImageEase - 画像処理ツール</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>ImageEase - 画像処理ツール</h1>
+    <p>画像のリサイズ、グレースケール変換、フィルタリングができるWebアプリ</p>
+  </header>
+  <main>
+    <section id="upload-section">
+      <label for="image-upload">画像を選択：</label>
+      <input type="file" id="image-upload" accept="image/*">
+    </section>
+    <section id="controls-section" style="display:none;">
+      <h2>画像処理オプション</h2>
+      <div>
+        <label for="resize-width">幅(px)：</label>
+        <input type="number" id="resize-width" min="1">
+        <label for="resize-height">高さ(px)：</label>
+        <input type="number" id="resize-height" min="1">
+        <button id="resize-btn">リサイズ</button>
+      </div>
+      <div>
+        <button id="grayscale-btn">グレースケール変換</button>
+        <button id="invert-btn">ネガポジ反転</button>
+        <button id="blur-btn">ぼかし</button>
+        <button id="sharpen-btn">シャープ</button>
+      </div>
+      <div>
+        <button id="reset-btn">元に戻す</button>
+        <button id="download-btn">画像をダウンロード</button>
+      </div>
+    </section>
+    <section id="preview-section">
+      <h2>プレビュー</h2>
+      <canvas id="image-canvas"></canvas>
+    </section>
+  </main>
+  <footer>
+    <p>© 2024 ImageEase</p>
+    <a href="https://github.com/your-github/ImageEase" target="_blank">GitHubで見る</a>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html> 
